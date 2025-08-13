@@ -5,7 +5,7 @@ export const products: Product[] = [
     id: 1,
     name: 'Premium White Paper Roll',
     price: 120,
-    image: 'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+    image: 'HRT-roll.jpg',
     images: [
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
@@ -25,7 +25,7 @@ export const products: Product[] = [
     id: 2,
     name: 'Recycled Brown Paper Roll',
     price: 95,
-    image: 'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
+    image: 'baking-paper-roll.jpg',
     images: [
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
@@ -45,7 +45,7 @@ export const products: Product[] = [
     id: 3,
     name: 'Kraft Paper Roll',
     price: 85,
-    image: 'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
+    image: 'kitchen-roll.webp',
     images: [
       'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
@@ -65,12 +65,12 @@ export const products: Product[] = [
     id: 4,
     name: 'Glossy Paper Roll',
     price: 140,
-    image: 'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg',
+    image: 'HRT-roll.jpg',
     images: [
-      'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg',
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
-      'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
-      'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg'
+      '/HRT-roll.jpg',
+      '/HRT-roll.jpg',
+      '/HRT-roll.jpg',
+      '/HRT-roll.jpg'
     ],
     description: 'High-gloss finish paper roll perfect for professional printing and photography.',
     category: 'Professional',
@@ -85,7 +85,7 @@ export const products: Product[] = [
     id: 5,
     name: 'Newsprint Paper Roll',
     price: 75,
-    image: 'https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg',
+    image: 'toilet roll.jpg',
     images: [
       'https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg',
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
@@ -105,10 +105,10 @@ export const products: Product[] = [
     id: 6,
     name: 'Art Paper Roll',
     price: 160,
-    image: 'https://images.pexels.com/photos/1124960/pexels-photo-1124960.jpeg',
+    image: 'baking-paper-roll.jpg',
     images: [
-      'https://images.pexels.com/photos/1124960/pexels-photo-1124960.jpeg',
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+      'baking-paper-roll.jpg',
+      'baking-paper-roll.jpg',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
