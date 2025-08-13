@@ -163,82 +163,83 @@ export default function Home() {
       className="min-h-screen"
     >
       {/* Hero Carousel Section */}
-      <section className="relative h-screen overflow-hidden hero-gradient">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0"
-          >
-            <div className="absolute inset-0 animated-bg opacity-80"></div>
-            <img 
-              src={heroSlides[currentSlide].image} 
-              alt={heroSlides[currentSlide].title}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
+    <section className="relative h-[70vh] overflow-hidden hero-gradient">
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={currentSlide}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="absolute inset-0"
+    >
+      <div className="absolute inset-0 animated-bg opacity-80"></div>
+      <img 
+        src={heroSlides[currentSlide].image} 
+        alt={heroSlides[currentSlide].title}
+        className="w-full h-full object-cover"
+      />
+    </motion.div>
+  </AnimatePresence>
 
-        {/* Carousel Content */}
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="text-center text-white max-w-4xl mx-auto px-4">
-            <motion.div
-              key={`content-${currentSlide}`}
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -50, opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <h2 className="text-sm md:text-lg font-medium mb-2 opacity-90">
-                {heroSlides[currentSlide].subtitle}
-              </h2>
-              <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
-                {heroSlides[currentSlide].title}
-              </h1>
-              <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-                {heroSlides[currentSlide].description}
-              </p>
-              <Link
-                to={heroSlides[currentSlide].buttonLink}
-                className="inline-flex items-center px-8 py-4 glass text-white font-bold rounded-full hover:scale-105 transition-all duration-300 transform shadow-2xl border border-white/20 hover:bg-white/20"
-              >
-                {heroSlides[currentSlide].buttonText}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Carousel Navigation */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Carousel Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300"
+  {/* Carousel Content */}
+  <div className="relative z-10 flex items-center justify-center h-full">
+    <div className="text-center text-white max-w-4xl mx-auto px-4">
+      <motion.div
+        key={`content-${currentSlide}`}
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -50, opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <h2 className="text-sm md:text-lg font-medium mb-2 opacity-90">
+          {heroSlides[currentSlide].subtitle}
+        </h2>
+        <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
+          {heroSlides[currentSlide].title}
+        </h1>
+        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
+          {heroSlides[currentSlide].description}
+        </p>
+        <Link
+          to={heroSlides[currentSlide].buttonLink}
+          className="inline-flex items-center px-8 py-4 glass text-white font-bold rounded-full hover:scale-105 transition-all duration-300 transform shadow-2xl border border-white/20 hover:bg-white/20"
         >
-          <ChevronLeft className="h-6 w-6 text-white" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300"
-        >
-          <ChevronRight className="h-6 w-6 text-white" />
-        </button>
-      </section>
+          {heroSlides[currentSlide].buttonText}
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </Link>
+      </motion.div>
+    </div>
+  </div>
+
+  {/* Carousel Navigation */}
+  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    {heroSlides.map((_, index) => (
+      <button
+        key={index}
+        onClick={() => setCurrentSlide(index)}
+        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+          index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
+        }`}
+      />
+    ))}
+  </div>
+
+  {/* Carousel Arrows */}
+  <button
+    onClick={prevSlide}
+    className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300"
+  >
+    <ChevronLeft className="h-6 w-6 text-white" />
+  </button>
+  <button
+    onClick={nextSlide}
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300"
+  >
+    <ChevronRight className="h-6 w-6 text-white" />
+  </button>
+</section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-white">
