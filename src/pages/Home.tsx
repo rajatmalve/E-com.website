@@ -19,6 +19,8 @@ import {
   Globe,
   Clock
 } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
+import { products } from '../data/products';
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -154,7 +156,7 @@ export default function Home() {
       avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg"
     }
   ];
-
+  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -239,6 +241,40 @@ export default function Home() {
     <ChevronRight className="h-6 w-6 text-white" />
   </button>
 </section>
+
+      {/* Featured Products Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-10"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Featured <span className="gradient-text-primary">Products</span>
+            </h2>
+            <p className="text-gray-600 mt-3">Handpicked items just for you</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.slice(0, 6).map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              to="/products"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+            >
+              View All Products
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
 
 
       {/* Features Section */}

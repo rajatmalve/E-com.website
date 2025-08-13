@@ -12,6 +12,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProductDetail from './pages/ProductDetail';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
+import OrdersPage from './pages/account/OrdersPage';
+import TrackPage from './pages/account/TrackPage';
+import ProfilePage from './pages/account/ProfilePage';
+import ReviewsPage from './pages/account/ReviewsPage';
 
 function App() {
   return (
@@ -30,6 +34,10 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/account/orders" element={<OrdersPage />} />
+                  <Route path="/account/track" element={<TrackPage />} />
+                  <Route path="/account/profile" element={<ProfilePage />} />
+                  <Route path="/account/reviews" element={<ReviewsPage />} />
                 </Routes>
               </AnimatePresence>
             </main>
