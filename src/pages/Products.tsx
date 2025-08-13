@@ -1,10 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, SortAsc } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { products } from '../data/products';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Products() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('name');
@@ -43,6 +46,20 @@ export default function Products() {
     });
   }, [searchTerm, selectedCategory, sortBy, sortOrder]);
 
+  // Sync search with URL query param `q`
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q') || '';
+    setSearchTerm(q);
+  }, [location.search]);
+
+  // Update URL when search term typed inside Products page search input
+  const handleLocalSearchChange = (value: string) => {
+    setSearchTerm(value);
+    const query = value.trim();
+    navigate({ pathname: '/products', search: query ? `?q=${encodeURIComponent(query)}` : '' }, { replace: true });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -70,7 +87,7 @@ export default function Products() {
                 placeholder="Search products..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => handleLocalSearchChange(e.target.value)}
               />
             </div>
 

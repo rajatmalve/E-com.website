@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Heart, User, Menu, X, LogOut } from 'lucide-react';
+import { ShoppingCart, Heart, User, Menu, X, LogOut, Search, ChevronDown } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import CartDrawer from './CartDrawer';
@@ -10,12 +10,15 @@ import LoginModal from './LoginModal';
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -34,6 +37,18 @@ export default function Navbar() {
     } else {
       setIsLoginOpen(true);
     }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchQuery(params.get('q') || '');
+  }, [location.search]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+    navigate({ pathname: '/products', search: query ? `?q=${encodeURIComponent(query)}` : '' });
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -82,6 +97,19 @@ export default function Navbar() {
 
             {/* Right Side Icons */}
             <div className="flex items-center space-x-4">
+              {/* Search (Desktop) */}
+              <form onSubmit={handleSearchSubmit} className="hidden md:block">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className="w-64 pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </form>
               {/* Wishlist */}
               <motion.button
                 onClick={() => setIsWishlistOpen(true)}
@@ -120,25 +148,48 @@ export default function Navbar() {
                 )}
               </motion.button>
 
-              {/* Auth Button */}
-              <motion.button
-                onClick={handleAuthClick}
-                className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {isAuthenticated ? (
-                  <>
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline font-semibold">Sign Out</span>
-                  </>
-                ) : (
-                  <>
+              {/* Account / Auth */}
+              {isAuthenticated ? (
+                <div className="relative">
+                  <motion.button
+                    onClick={() => setShowAccountMenu((s) => !s)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-white text-gray-800 rounded-xl border hover:shadow transition-all"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
                     <User className="h-4 w-4" />
-                    <span className="hidden sm:inline font-semibold">Sign In</span>
-                  </>
-                )}
-              </motion.button>
+                    <span className="hidden sm:inline font-semibold">Account</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.button>
+                  <AnimatePresence>
+                    {showAccountMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border p-2 z-50"
+                        onMouseLeave={() => setShowAccountMenu(false)}
+                      >
+                        <Link to="/account/orders" className="block px-3 py-2 rounded-lg hover:bg-gray-50">My Orders</Link>
+                        <Link to="/account/track" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Track Shipment</Link>
+                        <Link to="/account/profile" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Profile</Link>
+                        <Link to="/account/reviews" className="block px-3 py-2 rounded-lg hover:bg-gray-50">My Reviews</Link>
+                        <button onClick={logout} className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-red-600 flex items-center space-x-2"><LogOut className="h-4 w-4" /><span>Sign Out</span></button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <motion.button
+                  onClick={handleAuthClick}
+                  className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline font-semibold">Sign In</span>
+                </motion.button>
+              )}
 
               {/* Mobile Menu Button */}
               <motion.button
@@ -162,7 +213,20 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="px-4 py-2 space-y-1">
+              <div className="px-4 py-2 space-y-3">
+                {/* Search (Mobile) */}
+                <form onSubmit={handleSearchSubmit} className="pt-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search products..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/90"
+                    />
+                  </div>
+                </form>
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}
