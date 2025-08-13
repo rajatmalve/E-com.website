@@ -4,6 +4,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  password?: string;
   isAdmin: boolean;
   purchases: Array<{
     id: number;
@@ -22,6 +23,8 @@ interface AuthState {
   isAuthenticated: boolean;
   login: (email: string, password: string) => boolean;
   logout: () => void;
+  signup: (name: string, email: string, password: string) => boolean;
+  updateProfile: (updates: Partial<Pick<User, 'name'>>) => void;
   users: User[];
 }
 
@@ -82,13 +85,18 @@ const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>(mockUsers);
 
   const login = (email: string, password: string): boolean => {
     // Simple authentication logic
-    const foundUser = mockUsers.find(u => u.email === email);
-    if (foundUser && password === 'password') {
-      setUser(foundUser);
-      return true;
+    const foundUser = users.find(u => u.email === email);
+    if (foundUser) {
+      // If user has a stored password (signed up), use it; otherwise default demo password
+      const isValid = foundUser.password !== undefined ? (foundUser.password === password) : (password === 'password');
+      if (isValid) {
+        setUser(foundUser);
+        return true;
+      }
     }
     return false;
   };
@@ -97,14 +105,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const signup = (name: string, email: string, password: string): boolean => {
+    // Prevent duplicate accounts
+    const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+    if (exists) return false;
+
+    const nextId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    const newUser: User = {
+      id: nextId,
+      name,
+      email,
+      password,
+      isAdmin: false,
+      purchases: []
+    };
+    const updated = [...users, newUser];
+    setUsers(updated);
+    setUser(newUser);
+    return true;
+  };
+
+  const updateProfile = (updates: Partial<Pick<User, 'name'>>) => {
+    if (!user) return;
+    const updatedUser: User = { ...user, ...updates };
+    setUser(updatedUser);
+    setUsers(prev => prev.map(u => (u.id === updatedUser.id ? updatedUser : u)));
+  };
+
   return (
     <AuthContext.Provider 
       value={{ 
-        user, 
-        isAuthenticated: !!user, 
-        login, 
-        logout, 
-        users: mockUsers 
+        user,
+        isAuthenticated: !!user,
+        login,
+        logout,
+        signup,
+        updateProfile,
+        users
       }}
     >
       {children}

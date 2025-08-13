@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
@@ -12,6 +12,20 @@ import {
   Shield,
   Truck
 } from 'lucide-react';
+import { 
+  CURRENCY_SYMBOL,
+  SHIPPING_FREE_THRESHOLD,
+  SHIPPING_FEE,
+  GST_RATE,
+  COD_ENABLED,
+  COD_FEE,
+  WALLET_PROVIDERS,
+  NETBANKING_BANKS,
+  DEFAULT_COUNTRY
+} from '../config/checkout';
+import { useCart } from '../contexts/CartContext';
+// Lightweight invoice generation via jsPDF (optional in-browser)
+import jsPDF from 'jspdf';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -23,6 +37,22 @@ interface PaymentModalProps {
   cartTotal?: number;
 }
 
+type CheckoutFormData = {
+  cardNumber: string;
+  cardHolder: string;
+  expiryDate: string;
+  cvv: string;
+  email: string;
+  address: string;
+  city: string;
+  zipCode: string;
+  country: string;
+  gstin: string;
+  upiId: string;
+  bank: string;
+  wallet: string;
+};
+
 const PaymentModal = ({ 
   isOpen, 
   onClose, 
@@ -32,9 +62,9 @@ const PaymentModal = ({
   cartItems = [], 
   cartTotal = 0 
 }: PaymentModalProps) => {
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'netbanking' | 'wallet' | 'cod' | 'paypal' | 'crypto'>('card');
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CheckoutFormData>({
     cardNumber: '',
     cardHolder: '',
     expiryDate: '',
@@ -43,44 +73,66 @@ const PaymentModal = ({
     address: '',
     city: '',
     zipCode: '',
-    country: ''
+    country: DEFAULT_COUNTRY,
+    gstin: '',
+    upiId: '',
+    bank: '',
+    wallet: WALLET_PROVIDERS[0]
   });
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const { dispatch } = useCart();
 
-  const totalAmount = isCartCheckout ? cartTotal : (product.price * quantity);
+  const subtotal = isCartCheckout ? cartTotal : (product.price * quantity);
+  const shipping = subtotal >= SHIPPING_FREE_THRESHOLD ? 0 : SHIPPING_FEE;
+  const gst = useMemo(() => Math.round(subtotal * GST_RATE), [subtotal]);
+  const codFee = paymentMethod === 'cod' && COD_ENABLED ? COD_FEE : 0;
+  const totalAmount = subtotal + shipping + gst + codFee;
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: Record<string, string> = {};
 
-    if (!formData.cardNumber) newErrors.cardNumber = 'Card number is required';
-    else if (formData.cardNumber.length < 16) newErrors.cardNumber = 'Invalid card number';
+    if (paymentMethod === 'card') {
+      if (!formData.cardNumber) newErrors.cardNumber = 'Card number is required';
+      else if (formData.cardNumber.replace(/\s/g, '').length < 16) newErrors.cardNumber = 'Invalid card number';
+      if (!formData.cardHolder) newErrors.cardHolder = 'Card holder name is required';
+      if (!formData.expiryDate) newErrors.expiryDate = 'Expiry date is required';
+      else if (!/^\d{2}\/\d{2}$/.test(formData.expiryDate)) newErrors.expiryDate = 'Invalid expiry date';
+      if (!formData.cvv) newErrors.cvv = 'CVV is required';
+      else if (formData.cvv.length < 3) newErrors.cvv = 'Invalid CVV';
+    }
 
-    if (!formData.cardHolder) newErrors.cardHolder = 'Card holder name is required';
+    if (paymentMethod === 'upi') {
+      if (!formData.upiId) newErrors.upiId = 'UPI ID is required';
+      else if (!/^\w+@\w+$/.test(formData.upiId)) newErrors.upiId = 'Invalid UPI ID';
+    }
 
-    if (!formData.expiryDate) newErrors.expiryDate = 'Expiry date is required';
-    else if (!/^\d{2}\/\d{2}$/.test(formData.expiryDate)) newErrors.expiryDate = 'Invalid expiry date';
+    if (paymentMethod === 'netbanking') {
+      if (!formData.bank) newErrors.bank = 'Please select a bank';
+    }
 
-    if (!formData.cvv) newErrors.cvv = 'CVV is required';
-    else if (formData.cvv.length < 3) newErrors.cvv = 'Invalid CVV';
+  if (!formData.email) newErrors.email = 'Email is required';
+  else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email';
 
-    if (!formData.email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email';
-
+  if (paymentMethod === 'card' || paymentMethod === 'cod') {
     if (!formData.address) newErrors.address = 'Address is required';
     if (!formData.city) newErrors.city = 'City is required';
     if (!formData.zipCode) newErrors.zipCode = 'ZIP code is required';
     if (!formData.country) newErrors.country = 'Country is required';
+  }
+    if (formData.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin)) {
+      newErrors.gstin = 'Invalid GSTIN format';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev: typeof formData) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prevErrors: typeof errors) => ({ ...prevErrors, [field]: '' }));
     }
   };
 
@@ -104,7 +156,52 @@ const PaymentModal = ({
     // Simulate payment processing
     setTimeout(() => {
       setIsProcessing(false);
+      // Save order locally (demo storage)
+      try {
+        const items = isCartCheckout ? cartItems : [{ ...product, quantity }];
+        const order = {
+          id: Date.now(),
+          date: new Date().toISOString(),
+          items,
+          subtotal,
+          gst,
+          shipping,
+          codFee,
+          total: totalAmount,
+          paymentMethod,
+          contact: { email: formData.email },
+          address: {
+            address: formData.address,
+            city: formData.city,
+            zipCode: formData.zipCode,
+            country: formData.country
+          },
+          gstin: formData.gstin || ''
+        };
+        const existingRaw = localStorage.getItem('orders') || '[]';
+        const existing = JSON.parse(existingRaw);
+        existing.push(order);
+        localStorage.setItem('orders', JSON.stringify(existing));
+      } catch (e) {
+        console.warn('Failed to store order locally', e);
+      }
       setIsSuccess(true);
+
+      // Generate simple PDF invoice
+      try {
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Invoice', 20, 20);
+        doc.setFontSize(12);
+        doc.text(`Subtotal: ${CURRENCY_SYMBOL}${subtotal.toFixed(2)}`, 20, 40);
+        doc.text(`GST (${(GST_RATE*100).toFixed(0)}%): ${CURRENCY_SYMBOL}${gst.toFixed(2)}`, 20, 48);
+        doc.text(`Shipping: ${shipping === 0 ? 'Free' : CURRENCY_SYMBOL + shipping.toFixed(2)}`, 20, 56);
+        if (codFee > 0) doc.text(`COD Fee: ${CURRENCY_SYMBOL}${codFee.toFixed(2)}`, 20, 64);
+        doc.text(`Total: ${CURRENCY_SYMBOL}${totalAmount.toFixed(2)}`, 20, 72);
+        doc.save('invoice.pdf');
+      } catch (err) {
+        console.warn('Invoice generation failed', err);
+      }
       
       // Close modal after 3 seconds
       setTimeout(() => {
@@ -119,13 +216,16 @@ const PaymentModal = ({
           address: '',
           city: '',
           zipCode: '',
-          country: ''
+          country: DEFAULT_COUNTRY,
+          gstin: '',
+          upiId: '',
+          bank: '',
+          wallet: WALLET_PROVIDERS[0]
         });
         
         // Clear cart if it's a cart checkout
         if (isCartCheckout) {
-          // You can add cart clearing logic here if needed
-          console.log('Cart cleared after successful payment');
+          dispatch({ type: 'CLEAR_CART' });
         }
       }, 3000);
     }, 2000);
@@ -133,9 +233,11 @@ const PaymentModal = ({
 
   const paymentMethods = [
     { id: 'card', name: 'Credit/Debit Card', icon: CreditCard },
-    { id: 'paypal', name: 'PayPal', icon: Lock },
-    { id: 'crypto', name: 'Cryptocurrency', icon: Shield }
-  ];
+    { id: 'upi', name: 'UPI', icon: Lock },
+    { id: 'netbanking', name: 'NetBanking', icon: Lock },
+    { id: 'wallet', name: 'Wallets', icon: Shield },
+    ...(COD_ENABLED ? [{ id: 'cod', name: 'Cash on Delivery', icon: Shield }] as const : []),
+  ] as const;
 
   return (
     <AnimatePresence>
@@ -183,13 +285,8 @@ const PaymentModal = ({
                 <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle className="h-8 w-8 text-green-600" />
                 </div>
-                                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
-                 <p className="text-gray-600 mb-4">
-                   {isCartCheckout 
-                     ? `Your order with ${cartItems.length} item${cartItems.length > 1 ? 's' : ''} has been placed successfully.`
-                     : 'Your order has been placed successfully.'
-                   }
-                 </p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h3>
+                <p className="text-gray-600 mb-4">Your order has been placed successfully!</p>
                 <div className="bg-green-50 p-4 rounded-lg">
                   <p className="text-sm text-green-800">
                     Order confirmation has been sent to your email.
@@ -217,9 +314,9 @@ const PaymentModal = ({
                              <h4 className="font-medium text-gray-900 text-sm">{item.name}</h4>
                              <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                            </div>
-                           <div className="text-right">
-                             <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
-                           </div>
+                            <div className="text-right">
+                              <p className="font-bold text-gray-900">{CURRENCY_SYMBOL}{(item.price * item.quantity).toFixed(2)}</p>
+                            </div>
                          </div>
                        ))}
                        <div className="border-t pt-3 mt-3">
@@ -240,9 +337,9 @@ const PaymentModal = ({
                          <h4 className="font-medium text-gray-900">{product.name}</h4>
                          <p className="text-sm text-gray-600">Quantity: {quantity}</p>
                        </div>
-                       <div className="text-right">
-                         <p className="font-bold text-gray-900">${totalAmount.toFixed(2)}</p>
-                       </div>
+                        <div className="text-right">
+                          <p className="font-bold text-gray-900">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</p>
+                        </div>
                      </div>
                    )}
                  </div>
@@ -271,7 +368,7 @@ const PaymentModal = ({
                 </div>
 
                                  {/* Payment Form */}
-                 {paymentMethod === 'card' && (
+                  {paymentMethod === 'card' && (
                    <form onSubmit={handleSubmit} className="space-y-8">
                      {/* Card Preview */}
                      <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white mb-6">
@@ -593,19 +690,54 @@ const PaymentModal = ({
                        </div>
                      </motion.div>
 
-                     {/* Total and Submit */}
+                      {/* GSTIN */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.55 }}
+                        className="rounded-2xl"
+                      >
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">GSTIN (optional)</label>
+                        <input
+                          type="text"
+                          value={formData.gstin}
+                          onChange={(e) => handleInputChange('gstin', e.target.value.toUpperCase())}
+                          placeholder="22AAAAA0000A1Z5"
+                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 ${
+                            errors.gstin ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        />
+                        {errors.gstin && (
+                          <motion.p 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-red-500 text-sm mt-2 flex items-center"
+                          >
+                            <AlertCircle className="h-4 w-4 mr-1" />
+                            {errors.gstin}
+                          </motion.p>
+                        )}
+                      </motion.div>
+
+                      {/* Totals */}
                      <motion.div
                        initial={{ opacity: 0, y: 20 }}
                        animate={{ opacity: 1, y: 0 }}
                        transition={{ delay: 0.6 }}
                        className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100"
                      >
-                       <div className="flex justify-between items-center mb-6">
-                         <span className="text-xl font-bold text-gray-900">Total Amount:</span>
-                         <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                           ${totalAmount.toFixed(2)}
-                         </span>
-                       </div>
+                        <div className="space-y-2 text-gray-800">
+                          <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
+                          <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
+                          <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
+                          {codFee > 0 && (
+                            <div className="flex justify-between"><span>COD Fee</span><span>{CURRENCY_SYMBOL}{codFee.toFixed(2)}</span></div>
+                          )}
+                          <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                          </div>
+                        </div>
                        
                        <motion.button
                          type="submit"
@@ -617,12 +749,12 @@ const PaymentModal = ({
                          {isProcessing ? (
                            <div className="flex items-center justify-center space-x-3">
                              <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                             <span className="text-lg">Processing Payment...</span>
+                              <span className="text-lg">Processing Payment...</span>
                            </div>
                          ) : (
                            <div className="flex items-center justify-center space-x-2">
                              <CreditCard className="h-5 w-5" />
-                             <span className="text-lg">Pay ${totalAmount.toFixed(2)}</span>
+                              <span className="text-lg">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                            </div>
                          )}
                        </motion.button>
@@ -630,33 +762,139 @@ const PaymentModal = ({
                   </form>
                 )}
 
-                {/* PayPal Option */}
-                {paymentMethod === 'paypal' && (
-                  <div className="text-center py-8">
-                    <div className="bg-blue-50 p-6 rounded-xl mb-4">
-                      <Lock className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">PayPal Checkout</h3>
-                      <p className="text-gray-600">You will be redirected to PayPal to complete your payment.</p>
+                {/* UPI Option */}
+                {paymentMethod === 'upi' && (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-blue-50 p-4 rounded-xl">
+                      <h3 className="font-semibold text-gray-900 mb-2">Pay via UPI</h3>
+                      <p className="text-sm text-gray-600">Enter your UPI ID (e.g., name@bank)</p>
                     </div>
-                    <button className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                      Continue with PayPal
-                    </button>
-                  </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">UPI ID</label>
+                      <input
+                        type="text"
+                        value={formData.upiId}
+                        onChange={(e) => handleInputChange('upiId', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 ${
+                          errors.upiId ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        placeholder="name@bank"
+                      />
+                      {errors.upiId && (
+                        <p className="text-red-500 text-sm mt-2">{errors.upiId}</p>
+                      )}
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                      <div className="space-y-2 text-gray-800">
+                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
+                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                          <span>Total</span>
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
+                    </div>
+                  </form>
                 )}
 
-                {/* Crypto Option */}
-                {paymentMethod === 'crypto' && (
-                  <div className="text-center py-8">
-                    <div className="bg-purple-50 p-6 rounded-xl mb-4">
-                      <Shield className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Cryptocurrency Payment</h3>
-                      <p className="text-gray-600">Pay with Bitcoin, Ethereum, or other cryptocurrencies.</p>
+                {/* NetBanking Option */}
+                {paymentMethod === 'netbanking' && (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-blue-50 p-4 rounded-xl">
+                      <h3 className="font-semibold text-gray-900 mb-2">Pay via NetBanking</h3>
                     </div>
-                    <button className="w-full bg-purple-600 text-white py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                      Pay with Crypto
-                    </button>
-                  </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Select Bank</label>
+                      <select
+                        value={formData.bank}
+                        onChange={(e) => handleInputChange('bank', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 ${
+                          errors.bank ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <option value="">Choose bank</option>
+                        {NETBANKING_BANKS.map(b => (
+                          <option key={b} value={b}>{b}</option>
+                        ))}
+                      </select>
+                      {errors.bank && (
+                        <p className="text-red-500 text-sm mt-2">{errors.bank}</p>
+                      )}
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                      <div className="space-y-2 text-gray-800">
+                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
+                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                          <span>Total</span>
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
+                    </div>
+                  </form>
                 )}
+
+                {/* Wallets Option */}
+                {paymentMethod === 'wallet' && (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-blue-50 p-4 rounded-xl">
+                      <h3 className="font-semibold text-gray-900 mb-2">Pay via Wallets</h3>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Select Wallet</label>
+                      <select
+                        value={formData.wallet}
+                        onChange={(e) => handleInputChange('wallet', e.target.value)}
+                        className="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                      >
+                        {WALLET_PROVIDERS.map(w => (
+                          <option key={w} value={w}>{w}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                      <div className="space-y-2 text-gray-800">
+                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
+                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                          <span>Total</span>
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
+                    </div>
+                  </form>
+                )}
+
+                {/* COD Option */}
+                {paymentMethod === 'cod' && COD_ENABLED && (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-yellow-50 p-4 rounded-xl">
+                      <h3 className="font-semibold text-gray-900 mb-2">Cash on Delivery</h3>
+                      <p className="text-sm text-gray-700">A service fee of {CURRENCY_SYMBOL}{COD_FEE.toFixed(2)} applies.</p>
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                      <div className="space-y-2 text-gray-800">
+                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
+                        <div className="flex justify-between"><span>COD Fee</span><span>{CURRENCY_SYMBOL}{COD_FEE.toFixed(2)}</span></div>
+                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                          <span>Total</span>
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Place Order</button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Placeholder for others (paypal/crypto) if kept */}
               </div>
             )}
           </motion.div>

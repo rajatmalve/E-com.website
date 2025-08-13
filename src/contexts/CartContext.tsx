@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface Product {
   id: number;
@@ -32,7 +33,8 @@ type CartAction =
   | { type: 'UPDATE_QUANTITY'; productId: number; quantity: number }
   | { type: 'ADD_TO_WISHLIST'; product: Product }
   | { type: 'REMOVE_FROM_WISHLIST'; productId: number }
-  | { type: 'CLEAR_CART' };
+  | { type: 'CLEAR_CART' }
+  | { type: 'HYDRATE'; state: CartState };
 
 const initialState: CartState = {
   items: [],
@@ -105,6 +107,12 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         total: 0,
       };
     }
+    case 'HYDRATE': {
+      return {
+        ...state,
+        ...action.state,
+      };
+    }
     default:
       return state;
   }
@@ -117,6 +125,43 @@ const CartContext = createContext<{
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { user } = useAuth();
+
+  // Storage keys
+  const storageKey = user?.email ? `cart_${user.email}` : 'cart_guest';
+
+  // Hydrate from localStorage on mount and when user changes
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        const parsed: CartState = JSON.parse(raw);
+        // Recalculate total for safety
+        const total = parsed.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        dispatch({ type: 'HYDRATE', state: { ...parsed, total } });
+      } else {
+        // If switching users, clear to avoid leaking guest cart
+        dispatch({ type: 'HYDRATE', state: initialState });
+      }
+    } catch (e) {
+      console.error('Failed to hydrate cart from storage', e);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email]);
+
+  // Persist to localStorage when cart changes
+  useEffect(() => {
+    try {
+      const toStore: CartState = {
+        items: state.items,
+        wishlist: state.wishlist,
+        total: state.total,
+      };
+      localStorage.setItem(storageKey, JSON.stringify(toStore));
+    } catch (e) {
+      console.error('Failed to persist cart to storage', e);
+    }
+  }, [state.items, state.wishlist, state.total, storageKey]);
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>
