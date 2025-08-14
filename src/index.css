@@ -306,6 +306,17 @@ body {
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
+/* Modal Styles */
+.modal-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white;
+}
+
+/* Login Modal Specific */
+.login-modal input {
+  color: #1a202c !important;
+  background-color: white !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .card {

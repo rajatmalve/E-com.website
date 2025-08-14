@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import LoginModal from './LoginModal';
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
   Heart,
   ArrowRight,
   Shield,
@@ -18,6 +21,22 @@ import {
 
 const Footer = () => {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  const handleTrackOrderClick = (e) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      navigate('/track-order');
+    } else {
+      setIsLoginOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    navigate('/track-order');
+  };
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
@@ -145,24 +164,40 @@ const Footer = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
+            className="relative"
           >
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <ArrowRight className="w-3 h-3 mr-2 group-hover:translate-x-1 transition-transform" />
-                    {link.name}
-                  </a>
+                  {link.name === "Track Order" ? (
+                    <button
+                      onClick={handleTrackOrderClick}
+                      className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group w-full text-left"
+                    >
+                      <ArrowRight className="w-3 h-3 mr-2 group-hover:translate-x-1 transition-transform" />
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <ArrowRight className="w-3 h-3 mr-2 group-hover:translate-x-1 transition-transform" />
+                      {link.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
           </motion.div>
 
-          {/* Categories */}
+          {/* Login Modal */}
+          <LoginModal
+            isOpen={isLoginOpen}
+            onClose={() => setIsLoginOpen(false)}
+            onSuccess={handleLoginSuccess}
+          />          {/* Categories */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -171,13 +206,13 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Categories</h4>
             <div className="grid grid-cols-2 gap-2">
               {categories.map((category, index) => (
-                <a
+                <Link
                   key={index}
-                  href={`/products?category=${category.toLowerCase()}`}
+                  to={`/products?category=${category.toLowerCase()}`}
                   className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   {category}
-                </a>
+                </Link>
               ))}
             </div>
           </motion.div>
@@ -208,7 +243,7 @@ const Footer = () => {
               </div>
             </form>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-blue-400" />
                 <span className="text-gray-400 text-sm">support@boltstore.com</span>
@@ -230,21 +265,34 @@ const Footer = () => {
       <div className="border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-gray-400 text-sm">
-  © <a 
-      href="https://rsinfotechsys.com/" 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className="hover:underline"
-    >
-    RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
-  </a> 2025
-</p>
+            <div className="flex items-center space-x-2 text-sm text-gray-400">
+              <span>Design and Developed by</span>
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline text-white"
+              >
+                RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
+              </a>
+            </div>
 
-            <div className="flex items-center space-x-4 text-sm text-gray-400">
-              <span>Made with</span>
-              <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-              <span>for our customers</span>
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-400">
+               <div className="flex items-center space-x-2 text-sm text-gray-400">
+              
+              <span>Design and Developed by</span>
+              <span>© {new Date().getFullYear()}</span>
+              <a
+                href="https://rsinfotechsys.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline text-white"
+              >
+                RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
+              </a>
+            </div>
+              </span>
             </div>
           </div>
         </div>
