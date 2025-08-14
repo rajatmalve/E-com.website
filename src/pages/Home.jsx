@@ -42,7 +42,7 @@ export default function Home() {
       // title: "Kitchent Tissue Paper",
       // subtitle: "Trending Styles 2024",
       // description: "Ultra-absorbent, food-safe kitchen tissue for quick and hygienic cleaning.",
-      image: "/pocho-kitchenRollCarousal.png",
+      image: "/pocho-kitchenRollCarousal4444.png",
       // buttonText: "Shop Kitchent Tissue Paper",
       // buttonLink: "/products?category",
       // bgGradient: "from-pink-500 to-red-500"
@@ -78,10 +78,10 @@ export default function Home() {
   ];
 
   const categories = [
-    { name: "Electronics", image: "https://images.pexels.com/photos/1647976/pexels-photo-1647976.jpeg", count: "500+ Products", color: "from-blue-500 to-blue-600" },
-    { name: "Fashion", image: "https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg", count: "1000+ Products", color: "from-pink-500 to-pink-600" },
-    { name: "Home & Garden", image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg", count: "300+ Products", color: "from-green-500 to-green-600" },
-    { name: "Sports", image: "https://images.pexels.com/photos/3621104/pexels-photo-3621104.jpeg", count: "200+ Products", color: "from-red-500 to-red-600" },
+    { name: "Kitchen Roll", image: "kitchen-roll.png", count: "500+ Products", color: "from-blue-500 to-blue-600" },
+    { name: "Baking Sheet", image: "pocho-bakingSheet.jpg", count: "1000+ Products", color: "from-pink-500 to-pink-600" },
+    { name: "Baking Roll", image: "pocho-bakingRoll.png", count: "300+ Products", color: "from-green-500 to-green-600" },
+    { name: "Toilet Roll", image: "toilet roll.jpg", count: "200+ Products", color: "from-red-500 to-red-600" },
   ];
 
   const testimonials = [
@@ -97,7 +97,7 @@ export default function Home() {
         <AnimatePresence mode="wait">
           <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="absolute inset-0">
             {/* <div className="absolute inset-0 animated-bg opacity-80"></div> */}
-            <img src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].title} className="w-full h-full object-cover" />
+            <img src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].title} className="w-full h-[400px] md:h-[600px] lg:h-[700px] object-cover" />
           </motion.div>
         </AnimatePresence>
 
@@ -108,10 +108,10 @@ export default function Home() {
               <h2 className="text-xs sm:text-sm md:text-base lg:text-lg font-medium mb-2 opacity-90">{heroSlides[currentSlide].subtitle}</h2>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">{heroSlides[currentSlide].title}</h1>
               <p className="text-base sm:text-lg md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto opacity-90">{heroSlides[currentSlide].description}</p>
-              <Link to={heroSlides[currentSlide].buttonLink} className="inline-flex items-center px-8 py-4 glass text-white font-bold rounded-full hover:scale-105 transition-all duration-300 transform shadow-2xl border border-white/20 hover:bg-white/20">
+              {/* <Link to={heroSlides[currentSlide].buttonLink} className="inline-flex items-center px-8 py-4 glass text-white font-bold rounded-full hover:scale-105 transition-all duration-300 transform shadow-2xl border border-white/20 hover:bg-white/20">
                 {heroSlides[currentSlide].buttonText}
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              </Link> */}
             </motion.div>
           </div>
         </div>
