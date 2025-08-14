@@ -11,7 +11,7 @@ export const products = [
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
     description: 'High-quality premium white paper roll perfect for printing and packaging applications.',
-    category: 'Premium',
+    category: 'JRT',
     specifications: {
       width: '24 inches',
       length: '500 feet',
@@ -31,7 +31,7 @@ export const products = [
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
     description: 'Eco-friendly recycled brown paper roll, ideal for sustainable packaging solutions.',
-    category: 'Eco-Friendly',
+    category: 'Baking Sheet',
     specifications: {
       width: '18 inches',
       length: '400 feet',
@@ -51,7 +51,7 @@ export const products = [
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
     description: 'Durable kraft paper roll with excellent tear resistance for heavy-duty packaging.',
-    category: 'Industrial',
+    category: 'HRT',
     specifications: {
       width: '36 inches',
       length: '600 feet',
@@ -69,7 +69,7 @@ export const products = [
       '/toilet-paper1.jpg',
       '/toiltepaper-roll2.jpg'    ],
     description: 'High-gloss finish paper roll perfect for professional printing and photography.',
-    category: 'Professional',
+    category: 'Toilet Roll',
     specifications: {
       width: '24 inches',
       length: '300 feet',
@@ -89,7 +89,7 @@ export const products = [
 
     ],
     description: 'Cost-effective newsprint paper roll for newspapers and temporary applications.',
-    category: 'Economy',
+    category: 'Baking Paper',
     specifications: {
       width: '30 inches',
       length: '800 feet',
@@ -109,7 +109,7 @@ export const products = [
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
     description: 'Premium art paper roll with smooth texture, perfect for fine art and design projects.',
-    category: 'Art & Design',
+    category: 'Kitchen Roll',
     specifications: {
       width: '42 inches',
       length: '250 feet',

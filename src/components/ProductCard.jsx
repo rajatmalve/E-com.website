@@ -26,7 +26,7 @@ export default function ProductCard({ product, index }) {
   };
 
   const handleProductClick = () => {
-    navigate(`/products/${product.id}`);
+    navigate(`/products/₹{product.id}`);
   };
 
   return (
@@ -66,7 +66,7 @@ export default function ProductCard({ product, index }) {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
+          <Heart className={`h-4 w-4 ₹{isInWishlist ? 'fill-current' : ''}`} />
         </motion.button>
       </div>
 

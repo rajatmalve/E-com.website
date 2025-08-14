@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { 
   Facebook, 
   Twitter, 
@@ -109,12 +110,14 @@ const Footer = () => {
             className="lg:col-span-1"
           >
             <div className="mb-4">
-              <img
-                src="/Pocho Logo.jpg"
-                alt="Pocho"
-                className="h-10 w-auto object-contain"
-                loading="lazy"
-              />
+             <Link to="/">
+                <img
+                  src="/Pocho Logo.jpg"
+                  alt="Pocho"
+                  className="h-10 w-44 object-cover rounded-lg"
+                  loading="lazy"
+                />
+              </Link>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Your one-stop destination for premium products. We bring you the best quality items with exceptional service and competitive prices.
