@@ -86,8 +86,8 @@ export default function ProductCard({ product, index }) {
         </p>
         
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-600">
-            ${product.price}
+          <span className="text-3xl font-bold text-blue-600">
+            ₹{product.price}
           </span>
           
           <motion.button
