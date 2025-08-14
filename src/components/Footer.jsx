@@ -85,7 +85,7 @@ const Footer = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="flex items-center space-x-3 group"
               >
-                <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <div className="p-3 bg-primary-gradient rounded-xl group-hover:scale-110 transition-all duration-300 shadow-lg">
                   {feature.icon}
                 </div>
                 <div>
@@ -108,9 +108,14 @@ const Footer = () => {
             transition={{ duration: 0.5 }}
             className="lg:col-span-1"
           >
-            <h3 className="text-2xl font-bold mb-4 gradient-text-primary">
-              BoltStore
-            </h3>
+            <div className="mb-4">
+              <img
+                src="/Pocho Logo.jpg"
+                alt="Pocho"
+                className="h-10 w-auto object-contain"
+                loading="lazy"
+              />
+            </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Your one-stop destination for premium products. We bring you the best quality items with exceptional service and competitive prices.
             </p>
@@ -126,7 +131,7 @@ const Footer = () => {
                   href={social.href}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full hover:scale-110 transition-all duration-300 shadow-lg"
+                  className="p-3 bg-primary-gradient rounded-full hover:scale-110 transition-all duration-300 shadow-lg"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
@@ -196,7 +201,7 @@ const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-r-lg transition-all duration-300 shadow-lg"
+                  className="px-4 py-2 bg-primary-gradient rounded-r-lg transition-all duration-300 shadow-lg hover:opacity-90"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </button>

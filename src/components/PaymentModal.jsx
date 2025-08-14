@@ -339,7 +339,7 @@ const PaymentModal = ({
                 {paymentMethod === 'card' && (
                  <form onSubmit={handleSubmit} className="space-y-8">
                    {/* Card Preview */}
-                   <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white mb-6">
+                   <div className="bg-primary-gradient rounded-2xl p-6 text-white mb-6">
                      <div className="flex justify-between items-start mb-6">
                        <div className="flex items-center space-x-3">
                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
@@ -393,7 +393,7 @@ const PaymentModal = ({
                              }`}
                            />
                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                             <div className="w-8 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded"></div>
+                            <div className="w-8 h-5 bg-primary-gradient rounded"></div>
                            </div>
                          </div>
                          {errors.cardNumber && (
@@ -606,7 +606,7 @@ const PaymentModal = ({
                    </motion.div>
 
                    {/* Totals */}
-                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(var(--primary-color-rgb),0.06) 0%, rgba(var(--primary-color-rgb),0.12) 100%)', borderColor: 'rgba(var(--primary-color-rgb),0.25)' }}>
                      <div className="space-y-2 text-gray-800">
                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
@@ -616,14 +616,14 @@ const PaymentModal = ({
                        )}
                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
                          <span>Total</span>
-                         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                          <span className="bg-primary-gradient bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                        </div>
                      </div>
                     
                      <motion.button
                        type="submit"
                        disabled={isProcessing}
-                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg"
+                       className="w-full text-white py-4 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg bg-primary-gradient hover:opacity-90"
                        whileHover={{ scale: 1.02, y: -2 }}
                        whileTap={{ scale: 0.98 }}
                      >
@@ -665,17 +665,17 @@ const PaymentModal = ({
                        <p className="text-red-500 text-sm mt-2">{errors.upiId}</p>
                      )}
                    </div>
-                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                    <div className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(var(--primary-color-rgb),0.06) 0%, rgba(var(--primary-color-rgb),0.12) 100%)', borderColor: 'rgba(var(--primary-color-rgb),0.25)' }}>
                      <div className="space-y-2 text-gray-800">
                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
                          <span>Total</span>
-                         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                          <span className="bg-primary-gradient bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                        </div>
                      </div>
-                     <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
+                      <button className="w-full mt-4 text-white py-4 rounded-lg font-semibold transition-opacity bg-primary-gradient hover:opacity-90">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
                    </div>
                  </form>
                )}
@@ -704,17 +704,17 @@ const PaymentModal = ({
                        <p className="text-red-500 text-sm mt-2">{errors.bank}</p>
                      )}
                    </div>
-                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                    <div className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(var(--primary-color-rgb),0.06) 0%, rgba(var(--primary-color-rgb),0.12) 100%)', borderColor: 'rgba(var(--primary-color-rgb),0.25)' }}>
                      <div className="space-y-2 text-gray-800">
                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
                          <span>Total</span>
-                         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                          <span className="bg-primary-gradient bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                        </div>
                      </div>
-                     <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
+                      <button className="w-full mt-4 text-white py-4 rounded-lg font-semibold transition-opacity bg-primary-gradient hover:opacity-90">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
                    </div>
                  </form>
                )}
@@ -737,14 +737,14 @@ const PaymentModal = ({
                        ))}
                      </select>
                    </div>
-                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                    <div className="rounded-2xl p-6 border" style={{ background: 'linear-gradient(135deg, rgba(var(--primary-color-rgb),0.06) 0%, rgba(var(--primary-color-rgb),0.12) 100%)', borderColor: 'rgba(var(--primary-color-rgb),0.25)' }}>
                      <div className="space-y-2 text-gray-800">
                        <div className="flex justify-between"><span>Subtotal</span><span>{CURRENCY_SYMBOL}{subtotal.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>GST ({(GST_RATE*100).toFixed(0)}%)</span><span>{CURRENCY_SYMBOL}{gst.toFixed(2)}</span></div>
                        <div className="flex justify-between"><span>Shipping</span><span>{shipping === 0 ? 'Free' : `${CURRENCY_SYMBOL}${shipping.toFixed(2)}`}</span></div>
                        <div className="border-t pt-3 flex justify-between font-bold text-lg">
                          <span>Total</span>
-                         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
+                          <span className="bg-primary-gradient bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                        </div>
                      </div>
                      <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Pay {CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</button>
@@ -770,7 +770,7 @@ const PaymentModal = ({
                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{CURRENCY_SYMBOL}{totalAmount.toFixed(2)}</span>
                        </div>
                      </div>
-                     <button className="w-full mt-4 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Place Order</button>
+                      <button className="w-full mt-4 text-white py-4 rounded-lg font-semibold transition-opacity bg-primary-gradient hover:opacity-90">Place Order</button>
                    </div>
                  </form>
                )}

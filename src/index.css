@@ -13,6 +13,7 @@
   --light-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   
   --primary-color: #667eea;
+  --primary-color-rgb: 102, 126, 234;
   --secondary-color: #f093fb;
   --accent-color: #4facfe;
   --success-color: #43e97b;
@@ -82,6 +83,28 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Theme utility helpers driven by CSS vars */
+.bg-primary-gradient {
+  background: var(--primary-gradient);
+}
+
+/* Brand helpers */
+.text-primary {
+  color: var(--primary-color);
+}
+
+.bg-secondary-gradient {
+  background: var(--secondary-gradient);
+}
+
+.hover-text-primary:hover {
+  color: var(--primary-color);
+}
+
+.hover-bg-primary-10:hover {
+  background: rgba(var(--primary-color-rgb), 0.1);
 }
 
 .gradient-text-secondary {

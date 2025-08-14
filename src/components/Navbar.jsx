@@ -99,14 +99,14 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 md:h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <motion.div
-                className="text-xl xs:text-2xl sm:text-3xl font-bold gradient-text-primary"
+            <Link to="/" aria-label="Pocho" className="inline-flex items-center">
+              <motion.img
+                src="/pochoLogo.png"
+                alt="Pocho"
+                className="block h-auto max-h-12 sm:max-h-14 md:max-h-16 w-48 sm:w-56 md:w-64 object-cover rounded-lg"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
-              >
-                POCHO
-              </motion.div>
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -124,7 +124,7 @@ export default function Navbar() {
                   {link.name}
                   {location.pathname === link.path && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-1 bg-primary-gradient rounded-full"
                       layoutId="activeTab"
                     />
                   )}
@@ -145,7 +145,7 @@ export default function Navbar() {
                     onFocus={() => searchQuery.trim() && setShowSuggest(true)}
                     onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
                     placeholder="Search products..."
-                    className="w-56 lg:w-64 pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-56 lg:w-64 pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
                   />
                   {/* Suggestions */}
                   <AnimatePresence>
@@ -174,7 +174,7 @@ export default function Navbar() {
                         )}
                         <div className="border-t mt-1 pt-1">
                           <button
-                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-blue-600"
+                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-primary"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => handleSearchSubmit({ preventDefault: () => {} })}
                           >
@@ -189,14 +189,14 @@ export default function Navbar() {
               {/* Wishlist */}
               <motion.button
                 onClick={() => setIsWishlistOpen(true)}
-                className="relative p-2 sm:p-3 text-gray-700 hover:text-pink-500 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-pink-50"
+                className="relative p-2 sm:p-3 text-gray-700 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover-text-primary hover-bg-primary-10"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Heart className="h-6 w-6" />
                 {state.wishlist.length > 0 && (
                   <motion.span
-                    className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg"
+                    className="absolute -top-1 -right-1 bg-secondary-gradient text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                   >
@@ -208,14 +208,14 @@ export default function Navbar() {
               {/* Cart */}
               <motion.button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 sm:p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
+                className="relative p-2 sm:p-3 text-gray-700 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover-text-primary hover-bg-primary-10"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <ShoppingCart className="h-6 w-6" />
                 {state.items.length > 0 && (
                   <motion.span
-                    className="absolute -top-1 -right-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg"
+                    className="absolute -top-1 -right-1 bg-primary-gradient text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                   >
@@ -275,7 +275,7 @@ export default function Navbar() {
                   {/* Compact sign-in icon on small screens */}
                   <motion.button
                     onClick={handleAuthClick}
-                    className="sm:hidden p-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg"
+                    className="sm:hidden p-2 rounded-full bg-primary-gradient text-white transition-all duration-300 shadow-lg"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     aria-label="Sign In"
@@ -285,7 +285,7 @@ export default function Navbar() {
                   {/* Full button from sm and up */}
                   <motion.button
                     onClick={handleAuthClick}
-                    className="hidden sm:flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="hidden sm:flex items-center space-x-2 px-6 py-2 bg-primary-gradient text-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -298,7 +298,7 @@ export default function Navbar() {
               {/* Mobile Menu Button */}
               <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 sm:p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
+                className="md:hidden p-2 sm:p-3 text-gray-700 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover-text-primary hover-bg-primary-10"
                 whileTap={{ scale: 0.95 }}
               >
                 {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -327,7 +327,7 @@ export default function Navbar() {
                       value={searchQuery}
                       onChange={(e) => handleQueryChange(e.target.value)}
                       placeholder="Search products..."
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/90"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] bg-white/90"
                     />
                   </div>
                 </form>

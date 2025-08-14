@@ -278,7 +278,7 @@ export default function Home() {
       </section>
 
       {/* Call To Action */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-20 bg-primary-gradient">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-2xl bg-white/10 border border-white/20 p-10 text-center text-white">
             <h3 className="text-3xl font-bold mb-3">Join thousands of smart shoppers</h3>

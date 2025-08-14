@@ -1,11 +1,11 @@
 export const products = [
   {
     id: 1,
-    name: 'Premium White Paper Roll',
+    name: 'JRT',
     price: 120,
-    image: 'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+    image: 'pocho-JRT.png',
     images: [
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+      '/pocho-JRT.png',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
       'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
@@ -21,11 +21,11 @@ export const products = [
   },
   {
     id: 2,
-    name: 'Recycled Brown Paper Roll',
+    name: 'Baking Sheet',
     price: 95,
-    image: 'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
+    image: 'pocho-bakingSheet.jpg',
     images: [
-      'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
+      '/pocho-bakingSheet.jpg',
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
       'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
@@ -41,12 +41,12 @@ export const products = [
   },
   {
     id: 3,
-    name: 'Kraft Paper Roll',
+    name: 'HRT',
     price: 85,
-    image: 'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
+    image: 'pocho-HRT.png',
     images: [
-      'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg',
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+      '/pocho-HRT.png',
+      '',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'
     ],
@@ -61,15 +61,13 @@ export const products = [
   },
   {
     id: 4,
-    name: 'Glossy Paper Roll',
+    name: 'Toilet Roll',
     price: 140,
-    image: 'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg',
+    image: 'pocho-toiletPaperRunnigSoon.jpg',
     images: [
-      'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg',
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
-      'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
-      'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg'
-    ],
+      '/pocho-toiletPaperRunnigSoon.jpg',
+      '/toilet-paper1.jpg',
+      '/toiltepaper-roll2.jpg'    ],
     description: 'High-gloss finish paper roll perfect for professional printing and photography.',
     category: 'Professional',
     specifications: {
@@ -81,14 +79,14 @@ export const products = [
   },
   {
     id: 5,
-    name: 'Newsprint Paper Roll',
+    name: 'Baking Paper',
     price: 75,
-    image: 'https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg',
+    image: 'pocho-bakingRoll.png',
     images: [
-      'https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg',
-      'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
+      '/pocho-bakingRoll.png',
+      '/pocho-BakingRoll2.png',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
-      'https://images.pexels.com/photos/3651597/pexels-photo-3651597.jpeg'
+
     ],
     description: 'Cost-effective newsprint paper roll for newspapers and temporary applications.',
     category: 'Economy',
@@ -101,11 +99,11 @@ export const products = [
   },
   {
     id: 6,
-    name: 'Art Paper Roll',
+    name: 'Kitchen Roll',
     price: 160,
-    image: 'https://images.pexels.com/photos/1124960/pexels-photo-1124960.jpeg',
+    image: 'kitchen-roll.png',
     images: [
-      'https://images.pexels.com/photos/1124960/pexels-photo-1124960.jpeg',
+      '/kitchen-roll.png',
       'https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg',
       'https://images.pexels.com/photos/4207703/pexels-photo-4207703.jpeg',
       'https://images.pexels.com/photos/159733/paper-crafts-paper-colorful-paper-159733.jpeg'

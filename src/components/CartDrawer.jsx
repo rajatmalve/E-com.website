@@ -131,7 +131,7 @@ export default function CartDrawer({ isOpen, onClose }) {
                   </div>
                   <motion.button
                     onClick={handleCheckout}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg"
+                    className="w-full text-white py-3 rounded-lg font-medium transition-all duration-300 shadow-lg bg-primary-gradient hover:opacity-90"
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                   >
