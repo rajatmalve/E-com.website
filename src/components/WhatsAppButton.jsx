@@ -19,7 +19,7 @@ export default function WhatsAppButton() {
               <h3 className="font-semibold text-gray-800">Chat with us!</h3>
               <p className="text-sm text-gray-600">Hi there! 👋<br />How can we help you?</p>
               <a
-                href="https://wa.me/+15551234567"
+             href="https://wa.me/919561222419"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center"
