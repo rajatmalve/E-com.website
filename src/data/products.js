@@ -1,6 +1,4 @@
-import { Product } from '../contexts/CartContext';
-
-export const products: Product[] = [
+export const products = [
   {
     id: 1,
     name: 'Premium White Paper Roll',
@@ -122,3 +120,5 @@ export const products: Product[] = [
     }
   }
 ];
+
+

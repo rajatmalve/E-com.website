@@ -21,7 +21,7 @@ export default function OrdersPage() {
         <p className="text-gray-600">No orders yet.</p>
       ) : (
         <div className="space-y-4">
-          {orders.map((order: any) => (
+          {orders.map((order) => (
             <div key={order.id} className="p-4 rounded-xl border bg-white">
               <div className="flex justify-between mb-2">
                 <span className="font-semibold">Order #{order.id}</span>
@@ -36,5 +36,7 @@ export default function OrdersPage() {
     </div>
   );
 }
+
+
 
 

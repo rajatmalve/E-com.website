@@ -1,17 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Trash2 } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
+import { useCart } from '../contexts/CartContext.jsx';
 
-interface WishlistDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function WishlistDrawer({ isOpen, onClose }: WishlistDrawerProps) {
+export default function WishlistDrawer({ isOpen, onClose }) {
   const { state, dispatch } = useCart();
 
-  const moveToCart = (productId: number) => {
+  const moveToCart = (productId) => {
     const product = state.wishlist.find(item => item.id === productId);
     if (product) {
       dispatch({ type: 'ADD_TO_CART', product });
@@ -19,7 +14,7 @@ export default function WishlistDrawer({ isOpen, onClose }: WishlistDrawerProps)
     }
   };
 
-  const removeFromWishlist = (productId: number) => {
+  const removeFromWishlist = (productId) => {
     dispatch({ type: 'REMOVE_FROM_WISHLIST', productId });
   };
 
@@ -35,7 +30,7 @@ export default function WishlistDrawer({ isOpen, onClose }: WishlistDrawerProps)
             onClick={onClose}
           />
           <motion.div
-            className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl z-50 overflow-y-auto"
+            className="fixed right-0 top-0 h-full w-full max-w-sm md:w-96 bg-white shadow-xl z-50 overflow-y-auto"
             initial={{ x: 400 }}
             animate={{ x: 0 }}
             exit={{ x: 400 }}
@@ -104,3 +99,5 @@ export default function WishlistDrawer({ isOpen, onClose }: WishlistDrawerProps)
     </AnimatePresence>
   );
 }
+
+

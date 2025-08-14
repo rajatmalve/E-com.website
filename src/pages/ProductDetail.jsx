@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ShoppingCart, Heart, Truck, Shield, RotateCcw, CreditCard } from 'lucide-react';
-import { products } from '../data/products';
-import { useCart } from '../contexts/CartContext';
-import PaymentModal from '../components/PaymentModal';
+import { products } from '../data/products.js';
+import { useCart } from '../contexts/CartContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import PaymentModal from '../components/PaymentModal.jsx';
+import LoginModal from '../components/LoginModal.jsx';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { state, dispatch } = useCart();
+  const { isAuthenticated, needsLoginForCheckout } = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [showLogin, setShowLogin] = useState(false);
   
   const product = products.find(p => p.id === Number(id));
   
@@ -40,8 +44,20 @@ export default function ProductDetail() {
   };
 
   const handleCheckout = () => {
+    const mustLogin = !isAuthenticated || needsLoginForCheckout(30);
+    if (mustLogin) {
+      setShowLogin(true);
+      return;
+    }
     setShowPaymentModal(true);
   };
+
+  const afterLogin = () => {
+    setShowLogin(false);
+    setShowPaymentModal(true);
+  };
+
+  const activeVariantPrice = product.price;
 
   return (
     <motion.div
@@ -60,7 +76,7 @@ export default function ProductDetail() {
           <span>Back to Products</span>
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
           {/* Image Gallery */}
           <div className="space-y-4">
             <div className="aspect-square bg-white rounded-xl overflow-hidden shadow-md">
@@ -89,6 +105,7 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
+            
           </div>
 
           {/* Product Info */}
@@ -107,7 +124,7 @@ export default function ProductDetail() {
             <div className="border-t border-b py-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <span className="text-4xl font-bold text-blue-600">${product.price}</span>
+                  <span className="text-4xl font-bold text-blue-600">${activeVariantPrice}</span>
                   <span className="text-gray-500 ml-2">per roll</span>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -131,30 +148,7 @@ export default function ProductDetail() {
               </div>
               <div className="text-right">
                 <span className="text-lg text-gray-600">Total: </span>
-                <span className="text-2xl font-bold text-blue-600">${(product.price * quantity).toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* Specifications */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-3 rounded-lg">
-                  <span className="text-sm text-gray-500">Width</span>
-                  <p className="font-medium">{product.specifications.width}</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg">
-                  <span className="text-sm text-gray-500">Length</span>
-                  <p className="font-medium">{product.specifications.length}</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg">
-                  <span className="text-sm text-gray-500">Weight</span>
-                  <p className="font-medium">{product.specifications.weight}</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg">
-                  <span className="text-sm text-gray-500">Material</span>
-                  <p className="font-medium">{product.specifications.material}</p>
-                </div>
+                <span className="text-2xl font-bold text-blue-600">${(activeVariantPrice * quantity).toFixed(2)}</span>
               </div>
             </div>
 
@@ -197,7 +191,7 @@ export default function ProductDetail() {
                 whileTap={{ scale: 0.98 }}
               >
                 <CreditCard className="h-5 w-5" />
-                <span>Buy Now - ${(product.price * quantity).toFixed(2)}</span>
+                <span>Buy Now - ${(activeVariantPrice * quantity).toFixed(2)}</span>
               </motion.button>
             </div>
 
@@ -223,13 +217,17 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Payment Modal */}
       <PaymentModal
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
         product={product}
         quantity={quantity}
       />
+
+      <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onSuccess={afterLogin} />
     </motion.div>
   );
 }
+
+
+

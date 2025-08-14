@@ -1,21 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import AdminDashboard from './pages/AdminDashboard';
-import ProductDetail from './pages/ProductDetail';
-import { CartProvider } from './contexts/CartContext';
-import { AuthProvider } from './contexts/AuthContext';
-import OrdersPage from './pages/account/OrdersPage';
-import TrackPage from './pages/account/TrackPage';
-import ProfilePage from './pages/account/ProfilePage';
-import ReviewsPage from './pages/account/ReviewsPage';
+import { AnimatePresence } from 'framer-motion';
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
+import Home from './pages/Home.jsx';
+import Products from './pages/Products.jsx';
+import About from './pages/About.jsx';
+import Contact from './pages/Contact.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
+import ProductDetail from './pages/ProductDetail.jsx';
+import { CartProvider } from './contexts/CartContext.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import OrdersPage from './pages/account/OrdersPage.jsx';
+import TrackPage from './pages/account/TrackPage.jsx';
+import ProfilePage from './pages/account/ProfilePage.jsx';
+import ReviewsPage from './pages/account/ReviewsPage.jsx';
 
 function App() {
   return (
@@ -50,3 +50,5 @@ function App() {
 }
 
 export default App;
+
+

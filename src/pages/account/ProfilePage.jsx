@@ -9,7 +9,7 @@ export default function ProfilePage() {
 
   if (!isAuthenticated || !user) return <Navigate to="/" replace />;
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     updateProfile({ name: name.trim() });
     setMsg('Profile updated');
@@ -34,5 +34,7 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+
 
 
