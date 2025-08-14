@@ -13,7 +13,7 @@ export default function WhatsAppButton() {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 300, opacity: 0 }}
-            className="bg-white shadow-xl rounded-l-xl p-4 mr-2"
+            className="bg-white shadow-xl rounded-l-xl p-4 smr-2"
           >
             <div className="flex flex-col space-y-3">
               <h3 className="font-semibold text-gray-800">Chat with us!</h3>

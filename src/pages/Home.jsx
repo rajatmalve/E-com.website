@@ -29,32 +29,32 @@ export default function Home() {
   const heroSlides = [
     {
       id: 1,
-      title: "Premium Tissue",
-      subtitle: "Discover the Latest Premium",
-      description: "Premium, ultra-soft, and highly absorbent tissue offering superior comfort, strength, and hygiene for everyday use.",
+      // title: "Premium Tissue",
+      // subtitle: "Discover the Latest Premium",
+      // description: "Premium, ultra-soft, and highly absorbent tissue offering superior comfort, strength, and hygiene for everyday use.",
       image: "/pocho-carosal.jpg",
-      buttonText: "Shop Premium Tissue",
-      buttonLink: "/products?category",
+      // buttonText: "Shop Premium Tissue",
+      // buttonLink: "/products?category",
       // bgGradient: "from-blue-600 to-purple-600"
     },
     {
       id: 2,
-      title: "Kitchent Tissue Paper",
-      subtitle: "Trending Styles 2024",
-      description: "Ultra-absorbent, food-safe kitchen tissue for quick and hygienic cleaning.",
+      // title: "Kitchent Tissue Paper",
+      // subtitle: "Trending Styles 2024",
+      // description: "Ultra-absorbent, food-safe kitchen tissue for quick and hygienic cleaning.",
       image: "/pocho-kitchenRollCarousal.png",
-      buttonText: "Shop Kitchent Tissue Paper",
-      buttonLink: "/products?category",
+      // buttonText: "Shop Kitchent Tissue Paper",
+      // buttonLink: "/products?category",
       // bgGradient: "from-pink-500 to-red-500"
     },
     {
       id: 3,
-      title: "Toilet Rolls",
-      subtitle: "Toilet Rolls",
-      description: "Soft, strong, and flushable toilet tissue for gentle and hygienic bathroom care.",
+      // title: "Toilet Rolls",
+      // subtitle: "Toilet Rolls",
+      // description: "Soft, strong, and flushable toilet tissue for gentle and hygienic bathroom care.",
       image: "/carousal2.png",
-      buttonText: "Shop Toilet Rolls",
-      buttonLink: "/products?category=home",
+      // buttonText: "Shop Toilet Rolls",
+      // buttonLink: "/products?category=home",
       // bgGradient: "from-green-500 to-teal-500"
     }
   ];
