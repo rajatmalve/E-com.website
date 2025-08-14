@@ -16,9 +16,8 @@ import OrdersPage from './pages/account/OrdersPage.jsx';
 import TrackPage from './pages/account/TrackPage.jsx';
 import ProfilePage from './pages/account/ProfilePage.jsx';
 import ReviewsPage from './pages/account/ReviewsPage.jsx';
-import ShippingPolicy from './pages/ShippingPolicy.jsx';
 import TrackOrder from './pages/TrackOrder.jsx';
-import ReturnExchange from './pages/ReturnExchange.jsx';
+import WhatsAppButton from './components/WhatsAppButton.jsx';
 
 function App() {
   return (
@@ -41,13 +40,12 @@ function App() {
                   <Route path="/account/track" element={<TrackPage />} />
                   <Route path="/account/profile" element={<ProfilePage />} />
                   <Route path="/account/reviews" element={<ReviewsPage />} />
-                  <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route path="/track-order" element={<TrackOrder />} />
-                  <Route path="/return-exchange" element={<ReturnExchange />} />
                 </Routes>
               </AnimatePresence>
             </main>
             <Footer />
+            <WhatsAppButton />
           </div>
         </Router>
       </CartProvider>

@@ -117,17 +117,45 @@ export default function Home() {
         </div>
 
         {/* Carousel Navigation */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
           {heroSlides.map((_, index) => (
-            <button key={index} onClick={() => setCurrentSlide(index)} className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'}`} />
+            <button
+              key={index}
+              onClick={() => {
+                setCurrentSlide(index);
+                setIsAutoPlaying(false);
+                setTimeout(() => setIsAutoPlaying(true), 5000);
+              }}
+              className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-110 
+                ${index === currentSlide 
+                  ? 'bg-white scale-125 shadow-lg' 
+                  : 'bg-white/50 hover:bg-white/75'}`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
           ))}
         </div>
 
         {/* Carousel Arrows */}
-        <button onClick={prevSlide} className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300">
+        <button
+          onClick={() => {
+            prevSlide();
+            setIsAutoPlaying(false);
+            setTimeout(() => setIsAutoPlaying(true), 5000);
+          }}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm z-20"
+          aria-label="Previous slide"
+        >
           <ChevronLeft className="h-6 w-6 text-white" />
         </button>
-        <button onClick={nextSlide} className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300">
+        <button
+          onClick={() => {
+            nextSlide();
+            setIsAutoPlaying(false);
+            setTimeout(() => setIsAutoPlaying(true), 5000);
+          }}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm z-20"
+          aria-label="Next slide"
+        >
           <ChevronRight className="h-6 w-6 text-white" />
         </button>
       </section>

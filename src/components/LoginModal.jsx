@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
 export default function LoginModal({ isOpen, onClose, onSuccess }) {
@@ -10,6 +10,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, signup } = useAuth();
 
@@ -63,13 +64,19 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
           >
             <motion.div
-              className="bg-white rounded-xl p-6 w-full max-w-md"
+              className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl login-modal"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
+              style={{
+                backgroundColor: 'white',
+                '--tw-bg-opacity': '1',
+                color: '#1a202c'
+              }}
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">{mode === 'signin' ? 'Sign In' : 'Create Account'}</h2>
@@ -99,7 +106,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4" style={{ '--input-bg': 'white', '--input-text': '#1a202c' }}>
                 {mode === 'signup' && (
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -110,7 +117,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="modal-input"
                       placeholder="Enter your name"
                       required={mode === 'signup'}
                     />
@@ -183,15 +190,24 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your password"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
 
                 {error && (
@@ -232,12 +248,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
 
               {mode === 'signin' && (
                 <div className="mt-6 text-center">
-                  <p className="text-sm text-gray-600 mb-2">Demo Credentials:</p>
-                  <p className="text-xs text-gray-500">
-                    Admin: admin@poscho.com / password<br />
-                    User: john@example.com / password<br />
-                    Phone examples: +15550000001 / password
-                  </p>
+
+                  
                 </div>
               )}
             </motion.div>
