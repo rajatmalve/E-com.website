@@ -29,33 +29,33 @@ export default function Home() {
   const heroSlides = [
     {
       id: 1,
-      title: "Premium Electronics",
-      subtitle: "Discover the Latest Tech",
-      description: "Get the newest smartphones, laptops, and gadgets with amazing deals and fast delivery",
-      image: "https://images.pexels.com/photos/1647976/pexels-photo-1647976.jpeg",
-      buttonText: "Shop Electronics",
-      buttonLink: "/products?category=electronics",
-      bgGradient: "from-blue-600 to-purple-600"
+      title: "Premium Tissue",
+      subtitle: "Discover the Latest Premium",
+      description: "Premium, ultra-soft, and highly absorbent tissue offering superior comfort, strength, and hygiene for everyday use.",
+      image: "/image1caro.jpg",
+      buttonText: "Shop Premium Tissue",
+      buttonLink: "/products?category",
+      // bgGradient: "from-blue-600 to-purple-600"
     },
     {
       id: 2,
-      title: "Fashion Collection",
+      title: "Kitchent Tissue Paper",
       subtitle: "Trending Styles 2024",
-      description: "Explore our curated collection of trendy fashion items for every occasion",
-      image: "https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg",
-      buttonText: "Shop Fashion",
-      buttonLink: "/products?category=fashion",
-      bgGradient: "from-pink-500 to-red-500"
+      description: "Ultra-absorbent, food-safe kitchen tissue for quick and hygienic cleaning.",
+      image: "/kitchentissuepaper.jpg",
+      buttonText: "Shop Kitchent Tissue Paper",
+      buttonLink: "/products?category",
+      // bgGradient: "from-pink-500 to-red-500"
     },
     {
       id: 3,
-      title: "Home & Garden",
-      subtitle: "Transform Your Space",
-      description: "Create your dream home with our premium furniture and decor collection",
-      image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg",
-      buttonText: "Shop Home",
-      buttonLink: "/products?category=home-garden",
-      bgGradient: "from-green-500 to-teal-500"
+      title: "Toilet Rolls",
+      subtitle: "Toilet Rolls",
+      description: "Soft, strong, and flushable toilet tissue for gentle and hygienic bathroom care.",
+      image: "/toiletrolls.jpg",
+      buttonText: "Shop Toilet Rolls",
+      buttonLink: "/products?category=home",
+      // bgGradient: "from-green-500 to-teal-500"
     }
   ];
 
@@ -132,6 +132,31 @@ export default function Home() {
         </button>
       </section>
 
+      {/* Featured Products Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div className="text-center mb-10" initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Featured <span className="gradient-text-primary">Products</span>
+            </h2>
+            <p className="text-gray-600 mt-3">Handpicked items just for you</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.slice(0, 6).map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link to="/products" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-all">
+              View All Products
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Seasonal Banners */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -158,31 +183,6 @@ export default function Home() {
                 </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div className="text-center mb-10" initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Featured <span className="gradient-text-primary">Products</span>
-            </h2>
-            <p className="text-gray-600 mt-3">Handpicked items just for you</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.slice(0, 6).map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link to="/products" className="inline-flex items-center px-6 py-3 bg-primary-gradient text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition-all">
-              View All Products
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
           </div>
         </div>
       </section>
