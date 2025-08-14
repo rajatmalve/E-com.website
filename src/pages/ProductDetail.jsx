@@ -93,13 +93,13 @@ export default function ProductDetail() {
                 <button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
-                  className={`aspect-square bg-white rounded-lg overflow-hidden shadow-sm border-2 transition-colors ${
+                  className={`aspect-square bg-white rounded-lg overflow-hidden shadow-sm border-2 transition-colors ₹{
                     selectedImageIndex === index ? 'border-blue-500' : 'border-transparent'
                   }`}
                 >
                   <img
                     src={image}
-                    alt={`${product.name} view ${index + 1}`}
+                    alt={`₹{product.name} view ₹{index + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -124,7 +124,7 @@ export default function ProductDetail() {
             <div className="border-t border-b py-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <span className="text-4xl font-bold text-blue-600">${activeVariantPrice}</span>
+                  <span className="text-4xl font-bold text-blue-600">₹{activeVariantPrice}</span>
                   <span className="text-gray-500 ml-2">per roll</span>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -148,7 +148,7 @@ export default function ProductDetail() {
               </div>
               <div className="text-right">
                 <span className="text-lg text-gray-600">Total: </span>
-                <span className="text-2xl font-bold text-blue-600">${(activeVariantPrice * quantity).toFixed(2)}</span>
+                <span className="text-2xl font-bold text-blue-600">₹{(activeVariantPrice * quantity).toFixed(2)}</span>
               </div>
             </div>
 
@@ -171,7 +171,7 @@ export default function ProductDetail() {
 
                 <motion.button
                   onClick={handleToggleWishlist}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ₹{
                     isInWishlist
                       ? 'bg-red-100 text-red-700'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -179,7 +179,7 @@ export default function ProductDetail() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-current' : ''}`} />
+                  <Heart className={`h-5 w-5 ₹{isInWishlist ? 'fill-current' : ''}`} />
                 </motion.button>
               </div>
 
@@ -191,7 +191,7 @@ export default function ProductDetail() {
                 whileTap={{ scale: 0.98 }}
               >
                 <CreditCard className="h-5 w-5" />
-                <span>Buy Now - ${(activeVariantPrice * quantity).toFixed(2)}</span>
+                <span>Buy Now - Rs{(activeVariantPrice * quantity).toFixed(2)}</span>
               </motion.button>
             </div>
 
@@ -201,7 +201,7 @@ export default function ProductDetail() {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <Truck className="h-5 w-5 text-green-600" />
-                  <span className="text-gray-700">Free shipping on orders over $200</span>
+                  <span className="text-gray-700">Free shipping on orders over ₹200</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Shield className="h-5 w-5 text-blue-600" />

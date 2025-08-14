@@ -32,7 +32,7 @@ export default function Home() {
       title: "Premium Tissue",
       subtitle: "Discover the Latest Premium",
       description: "Premium, ultra-soft, and highly absorbent tissue offering superior comfort, strength, and hygiene for everyday use.",
-      image: "/image1caro.jpg",
+      image: "/pocho-carosal.jpg",
       buttonText: "Shop Premium Tissue",
       buttonLink: "/products?category",
       // bgGradient: "from-blue-600 to-purple-600"
@@ -42,7 +42,7 @@ export default function Home() {
       title: "Kitchent Tissue Paper",
       subtitle: "Trending Styles 2024",
       description: "Ultra-absorbent, food-safe kitchen tissue for quick and hygienic cleaning.",
-      image: "/kitchentissuepaper.jpg",
+      image: "/pocho-kitchenRollCarousal.png",
       buttonText: "Shop Kitchent Tissue Paper",
       buttonLink: "/products?category",
       // bgGradient: "from-pink-500 to-red-500"
@@ -52,7 +52,7 @@ export default function Home() {
       title: "Toilet Rolls",
       subtitle: "Toilet Rolls",
       description: "Soft, strong, and flushable toilet tissue for gentle and hygienic bathroom care.",
-      image: "/toiletrolls.jpg",
+      image: "/carousal2.png",
       buttonText: "Shop Toilet Rolls",
       buttonLink: "/products?category=home",
       // bgGradient: "from-green-500 to-teal-500"
@@ -96,7 +96,7 @@ export default function Home() {
       <section className="relative h-[60vh] sm:h-[70vh] overflow-hidden hero-gradient">
         <AnimatePresence mode="wait">
           <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="absolute inset-0">
-            <div className="absolute inset-0 animated-bg opacity-80"></div>
+            {/* <div className="absolute inset-0 animated-bg opacity-80"></div> */}
             <img src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].title} className="w-full h-full object-cover" />
           </motion.div>
         </AnimatePresence>
