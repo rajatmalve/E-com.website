@@ -23,7 +23,6 @@ export default function Navbar() {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggest, setShowSuggest] = useState(false);
   const [isSuggestLoading, setIsSuggestLoading] = useState(false);
-  
   let suggestTimer;
 
   const navLinks = [
@@ -106,7 +105,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                BoltStore
+                POCHO
               </motion.div>
             </Link>
 
@@ -257,10 +256,15 @@ export default function Navbar() {
                         className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border p-2 z-50"
                         onMouseLeave={() => setShowAccountMenu(false)}
                       >
-                        <Link to="/account/orders" className="block px-3 py-2 rounded-lg hover:bg-gray-50">My Orders</Link>
-                        <Link to="/account/track" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Track Shipment</Link>
                         <Link to="/account/profile" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Profile</Link>
+                        <div className="border-t my-1"></div>
+                        <Link to="/account/orders" className="block px-3 py-2 rounded-lg hover:bg-gray-50">My Orders</Link>
                         <Link to="/account/reviews" className="block px-3 py-2 rounded-lg hover:bg-gray-50">My Reviews</Link>
+                        <div className="border-t my-1"></div>
+                        <Link to="/track-order" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Track Order</Link>
+                        <Link to="/shipping-policy" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Shipping Info</Link>
+                        <Link to="/return-exchange" className="block px-3 py-2 rounded-lg hover:bg-gray-50">Returns & Exchange</Link>
+                        <div className="border-t my-1"></div>
                         <button onClick={logout} className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-red-600 flex items-center space-x-2"><LogOut className="h-4 w-4" /><span>Sign Out</span></button>
                       </motion.div>
                     )}

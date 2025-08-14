@@ -53,6 +53,9 @@ const Footer = () => {
     { name: "Products", href: "/products" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Track Order", href: "/track-order" },
+    { name: "Return/Exchange", href: "/return-exchange" },
+    { name: "Shipping Policy", href: "/shipping-policy" },
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Terms of Service", href: "/terms" }
   ];
@@ -211,7 +214,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-blue-400" />
-                <span className="text-gray-400 text-sm">123 Commerce St, City, State 12345</span>
+                <span className="text-gray-400 text-sm">123 dighori, Nagpur, 12345</span>
               </div>
             </div>
           </motion.div>
@@ -222,9 +225,17 @@ const Footer = () => {
       <div className="border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © 2024 BoltStore. All rights reserved.
-            </p>
+          <p className="text-gray-400 text-sm">
+  © <a 
+      href="https://rsinfotechsys.com/" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="hover:underline"
+    >
+    RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
+  </a> 2025
+</p>
+
             <div className="flex items-center space-x-4 text-sm text-gray-400">
               <span>Made with</span>
               <Heart className="w-4 h-4 text-red-500 animate-pulse" />
