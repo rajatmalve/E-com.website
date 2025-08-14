@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, User, Menu, X, LogOut, Search, ChevronDown } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
-import { useAuth } from '../contexts/AuthContext';
-import CartDrawer from './CartDrawer';
-import WishlistDrawer from './WishlistDrawer';
-import LoginModal from './LoginModal';
+import { useCart } from '../contexts/CartContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { getSuggestions } from '../services/products.js';
+import CartDrawer from './CartDrawer.jsx';
+import WishlistDrawer from './WishlistDrawer.jsx';
+import LoginModal from './LoginModal.jsx';
 
 export default function Navbar() {
   const location = useLocation();
@@ -19,6 +20,11 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const [isSuggestLoading, setIsSuggestLoading] = useState(false);
+  
+  let suggestTimer;
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -44,11 +50,43 @@ export default function Navbar() {
     setSearchQuery(params.get('q') || '');
   }, [location.search]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     const query = searchQuery.trim();
     navigate({ pathname: '/products', search: query ? `?q=${encodeURIComponent(query)}` : '' });
     setIsMobileMenuOpen(false);
+    setShowSuggest(false);
+  };
+
+  const handleQueryChange = async (value) => {
+    setSearchQuery(value);
+    if (!value.trim()) {
+      setSuggestions([]);
+      setShowSuggest(false);
+      return;
+    }
+    setShowSuggest(true);
+    clearTimeout(suggestTimer);
+    suggestTimer = setTimeout(async () => {
+      setIsSuggestLoading(true);
+      try {
+        const res = await getSuggestions(value);
+        setSuggestions(res);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setIsSuggestLoading(false);
+      }
+    }, 200);
+  };
+
+  const handleSelectSuggestion = (s) => {
+    setShowSuggest(false);
+    if (s?.id) {
+      navigate(`/products/${s.id}`);
+    } else if (s?.name) {
+      navigate({ pathname: '/products', search: `?q=${encodeURIComponent(s.name)}` });
+    }
   };
 
   return (
@@ -60,11 +98,11 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-14 md:h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <motion.div
-                className="text-3xl font-bold gradient-text-primary"
+                className="text-xl xs:text-2xl sm:text-3xl font-bold gradient-text-primary"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
@@ -73,7 +111,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -96,24 +134,63 @@ export default function Navbar() {
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Search (Desktop) */}
-              <form onSubmit={handleSearchSubmit} className="hidden md:block">
+              <form onSubmit={handleSearchSubmit} className="hidden lg:block">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => handleQueryChange(e.target.value)}
+                    onFocus={() => searchQuery.trim() && setShowSuggest(true)}
+                    onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
                     placeholder="Search products..."
-                    className="w-64 pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-56 lg:w-64 pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  {/* Suggestions */}
+                  <AnimatePresence>
+                    {showSuggest && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        className="absolute mt-2 w-64 lg:w-[22rem] bg-white rounded-xl shadow-lg border p-2 z-50"
+                      >
+                        {isSuggestLoading ? (
+                          <div className="px-3 py-2 text-sm text-gray-500">Loading…</div>
+                        ) : suggestions.length === 0 ? (
+                          <div className="px-3 py-2 text-sm text-gray-500">No suggestions</div>
+                        ) : (
+                          suggestions.map((s) => (
+                            <button
+                              key={`${s.id || s.name}`}
+                              className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-sm"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => handleSelectSuggestion(s)}
+                            >
+                              {s.name}
+                            </button>
+                          ))
+                        )}
+                        <div className="border-t mt-1 pt-1">
+                          <button
+                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-blue-600"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => handleSearchSubmit({ preventDefault: () => {} })}
+                          >
+                            Search for “{searchQuery}”
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </form>
               {/* Wishlist */}
               <motion.button
                 onClick={() => setIsWishlistOpen(true)}
-                className="relative p-3 text-gray-700 hover:text-pink-500 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-pink-50"
+                className="relative p-2 sm:p-3 text-gray-700 hover:text-pink-500 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-pink-50"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -132,7 +209,7 @@ export default function Navbar() {
               {/* Cart */}
               <motion.button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
+                className="relative p-2 sm:p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -151,9 +228,19 @@ export default function Navbar() {
               {/* Account / Auth */}
               {isAuthenticated ? (
                 <div className="relative">
+                  {/* Compact account button on small screens */}
                   <motion.button
                     onClick={() => setShowAccountMenu((s) => !s)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-white text-gray-800 rounded-xl border hover:shadow transition-all"
+                    className="sm:hidden p-2 rounded-full border bg-white text-gray-800 hover:shadow transition-all"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <User className="h-5 w-5" />
+                  </motion.button>
+                  {/* Full button from sm and up */}
+                  <motion.button
+                    onClick={() => setShowAccountMenu((s) => !s)}
+                    className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-white text-gray-800 rounded-xl border hover:shadow transition-all"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                   >
@@ -180,21 +267,34 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <motion.button
-                  onClick={handleAuthClick}
-                  className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline font-semibold">Sign In</span>
-                </motion.button>
+                <>
+                  {/* Compact sign-in icon on small screens */}
+                  <motion.button
+                    onClick={handleAuthClick}
+                    className="sm:hidden p-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Sign In"
+                  >
+                    <User className="h-5 w-5" />
+                  </motion.button>
+                  {/* Full button from sm and up */}
+                  <motion.button
+                    onClick={handleAuthClick}
+                    className="hidden sm:flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline font-semibold">Sign In</span>
+                  </motion.button>
+                </>
               )}
 
               {/* Mobile Menu Button */}
               <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
+                className="md:hidden p-2 sm:p-3 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 hover:shadow-lg rounded-full hover:bg-blue-50"
                 whileTap={{ scale: 0.95 }}
               >
                 {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -221,7 +321,7 @@ export default function Navbar() {
                     <input
                       type="text"
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => handleQueryChange(e.target.value)}
                       placeholder="Search products..."
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/90"
                     />
@@ -254,3 +354,5 @@ export default function Navbar() {
     </>
   );
 }
+
+

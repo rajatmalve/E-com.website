@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, SortAsc } from 'lucide-react';
-import ProductCard from '../components/ProductCard';
-import { products } from '../data/products';
+import ProductCard from '../components/ProductCard.jsx';
+import { products } from '../data/products.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Products() {
@@ -11,7 +11,7 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
@@ -54,7 +54,7 @@ export default function Products() {
   }, [location.search]);
 
   // Update URL when search term typed inside Products page search input
-  const handleLocalSearchChange = (value: string) => {
+  const handleLocalSearchChange = (value) => {
     setSearchTerm(value);
     const query = value.trim();
     navigate({ pathname: '/products', search: query ? `?q=${encodeURIComponent(query)}` : '' }, { replace: true });
@@ -78,7 +78,7 @@ export default function Products() {
 
         {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -140,7 +140,7 @@ export default function Products() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filteredAndSortedProducts.map((product, index) => (
             <ProductCard
               key={product.id}
@@ -159,3 +159,6 @@ export default function Products() {
     </motion.div>
   );
 }
+
+
+

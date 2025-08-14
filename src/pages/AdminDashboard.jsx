@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, ShoppingCart, DollarSign, Package, Eye, Calendar } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import { Navigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const { user, users } = useAuth();
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   if (!user?.isAdmin) {
     return <Navigate to="/" replace />;
@@ -39,14 +39,14 @@ export default function AdminDashboard() {
     }
   ];
 
-  const getColorClasses = (color: string) => {
+  const getColorClasses = (color) => {
     const colors = {
       blue: 'bg-blue-500',
       green: 'bg-green-500',
       yellow: 'bg-yellow-500',
       purple: 'bg-purple-500'
     };
-    return colors[color as keyof typeof colors] || colors.blue;
+    return colors[color] || colors.blue;
   };
 
   return (
@@ -117,34 +117,34 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      <div className="text-sm font-medium text-gray-900">{u.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="text-sm text-gray-500">{u.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.purchases.length}</div>
+                      <div className="text-sm text-gray-900">{u.purchases.length}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        ${user.purchases.reduce((sum, purchase) => sum + purchase.total, 0).toLocaleString()}
+                        ${u.purchases.reduce((sum, purchase) => sum + purchase.total, 0).toLocaleString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.isAdmin 
+                        u.isAdmin 
                           ? 'bg-purple-100 text-purple-800' 
                           : 'bg-green-100 text-green-800'
                       }`}>
-                        {user.isAdmin ? 'Admin' : 'User'}
+                        {u.isAdmin ? 'Admin' : 'User'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => setSelectedUser(selectedUser === user.id ? null : user.id)}
+                        onClick={() => setSelectedUser(selectedUser === u.id ? null : u.id)}
                         className="text-blue-600 hover:text-blue-900 inline-flex items-center"
                       >
                         <Eye className="h-4 w-4 mr-1" />
@@ -201,3 +201,5 @@ export default function AdminDashboard() {
     </motion.div>
   );
 }
+
+

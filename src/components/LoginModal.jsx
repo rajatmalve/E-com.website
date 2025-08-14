@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+export default function LoginModal({ isOpen, onClose, onSuccess }) {
+  const [mode, setMode] = useState('signin');
+  const [loginMethod, setLoginMethod] = useState('email'); // 'email' | 'phone'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, signup } = useAuth();
@@ -19,33 +16,39 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const resetFields = () => {
     setName('');
     setEmail('');
+    setPhone('');
     setPassword('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     
     if (mode === 'signin') {
-      const success = login(email, password);
-      if (success) {
-        onClose();
-        resetFields();
-      } else {
-        setError('Invalid email or password');
-      }
-    } else {
-      if (!name.trim()) {
-        setError('Name is required');
+      const identifier = loginMethod === 'email' ? email : phone;
+      if (!identifier.trim()) {
+        setError(loginMethod === 'email' ? 'Email is required' : 'Phone is required');
         return;
       }
-      const success = signup(name.trim(), email, password);
+      const success = login(identifier, password);
       if (success) {
         onClose();
+        if (typeof onSuccess === 'function') onSuccess();
+        resetFields();
+      } else {
+        setError('Invalid credentials');
+      }
+    } else {
+      if (!name.trim()) return setError('Name is required');
+      if (!email.trim() && !phone.trim()) return setError('Provide email or phone');
+      const success = signup(name.trim(), email.trim(), password, phone.trim());
+      if (success) {
+        onClose();
+        if (typeof onSuccess === 'function') onSuccess();
         resetFields();
         setMode('signin');
       } else {
-        setError('Account already exists with this email');
+        setError('Account already exists with this email/phone');
       }
     }
   };
@@ -78,6 +81,24 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </button>
               </div>
 
+              {/* Toggle for email/phone login */}
+              {mode === 'signin' && (
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <button
+                    className={`px-3 py-2 rounded-lg border ${loginMethod === 'email' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white'}`}
+                    onClick={() => setLoginMethod('email')}
+                  >
+                    Email
+                  </button>
+                  <button
+                    className={`px-3 py-2 rounded-lg border ${loginMethod === 'phone' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white'}`}
+                    onClick={() => setLoginMethod('phone')}
+                  >
+                    Phone
+                  </button>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 {mode === 'signup' && (
                   <div>
@@ -95,20 +116,68 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     />
                   </div>
                 )}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
+
+                {/* Email or Phone input */}
+                {mode === 'signin' ? (
+                  loginMethod === 'email' ? (
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your email"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your phone"
+                      />
+                    </div>
+                  )
+                ) : (
+                  <>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Email (optional if phone provided)
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your email"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone (optional if email provided)
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your phone"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -154,7 +223,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   <span className="text-gray-600">Already have an account? </span>
                   <button
                     className="text-blue-600 font-semibold hover:underline"
-                    onClick={() => { setMode('signin'); setError(''); }}
+                    onClick={() => { setMode('signin'); setError(''); setLoginMethod('email'); }}
                   >
                     Sign In
                   </button>
@@ -166,7 +235,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   <p className="text-sm text-gray-600 mb-2">Demo Credentials:</p>
                   <p className="text-xs text-gray-500">
                     Admin: admin@poscho.com / password<br />
-                    User: john@example.com / password
+                    User: john@example.com / password<br />
+                    Phone examples: +15550000001 / password
                   </p>
                 </div>
               )}
@@ -177,3 +247,5 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     </AnimatePresence>
   );
 }
+
+

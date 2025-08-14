@@ -1,29 +1,39 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, Trash2, CreditCard } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
-import PaymentModal from './PaymentModal';
+import { useCart } from '../contexts/CartContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import PaymentModal from './PaymentModal.jsx';
+import LoginModal from './LoginModal.jsx';
 
-interface CartDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
+export default function CartDrawer({ isOpen, onClose }) {
   const { state, dispatch } = useCart();
+  const { isAuthenticated, needsLoginForCheckout } = useAuth();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (productId, quantity) => {
     dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
   };
 
-  const removeItem = (productId: number) => {
+  const removeItem = (productId) => {
     dispatch({ type: 'REMOVE_FROM_CART', productId });
   };
 
   const handleCheckout = () => {
+    const mustLogin = !isAuthenticated || needsLoginForCheckout(30);
+    if (mustLogin) {
+      setShowLogin(true);
+      return;
+    }
     setShowPaymentModal(true);
-    onClose(); // Close the cart drawer when opening payment modal
+    onClose();
+  };
+
+  const afterLogin = () => {
+    setShowLogin(false);
+    setShowPaymentModal(true);
+    onClose();
   };
 
   return (
@@ -39,7 +49,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               onClick={onClose}
             />
             <motion.div
-              className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl z-50 overflow-y-auto"
+              className="fixed right-0 top-0 h-full w-full max-w-sm md:w-96 bg-white shadow-xl z-50 overflow-y-auto"
               initial={{ x: 400 }}
               animate={{ x: 0 }}
               exit={{ x: 400 }}
@@ -137,16 +147,19 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         )}
       </AnimatePresence>
 
-      {/* Payment Modal for Cart Checkout */}
       <PaymentModal
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
-        product={state.items[0]} // For cart checkout, we'll use the first item as representative
+        product={state.items[0]}
         quantity={state.items.reduce((total, item) => total + item.quantity, 0)}
         isCartCheckout={true}
         cartItems={state.items}
         cartTotal={state.total}
       />
+
+      <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onSuccess={afterLogin} />
     </>
   );
 }
+
+

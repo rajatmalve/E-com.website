@@ -1,48 +1,13 @@
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
-import { useAuth } from './AuthContext';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { useAuth } from './AuthContext.jsx';
 
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  images: string[];
-  description: string;
-  category: string;
-  specifications: {
-    width: string;
-    length: string;
-    weight: string;
-    material: string;
-  };
-}
-
-export interface CartItem extends Product {
-  quantity: number;
-}
-
-interface CartState {
-  items: CartItem[];
-  wishlist: Product[];
-  total: number;
-}
-
-type CartAction =
-  | { type: 'ADD_TO_CART'; product: Product }
-  | { type: 'REMOVE_FROM_CART'; productId: number }
-  | { type: 'UPDATE_QUANTITY'; productId: number; quantity: number }
-  | { type: 'ADD_TO_WISHLIST'; product: Product }
-  | { type: 'REMOVE_FROM_WISHLIST'; productId: number }
-  | { type: 'CLEAR_CART' }
-  | { type: 'HYDRATE'; state: CartState };
-
-const initialState: CartState = {
+const initialState = {
   items: [],
   wishlist: [],
   total: 0,
 };
 
-function cartReducer(state: CartState, action: CartAction): CartState {
+function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_TO_CART': {
       const existingItem = state.items.find(item => item.id === action.product.id);
@@ -74,11 +39,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       };
     }
     case 'UPDATE_QUANTITY': {
-      const updatedItems = state.items.map(item =>
-        item.id === action.productId
-          ? { ...item, quantity: Math.max(0, action.quantity) }
-          : item
-      ).filter(item => item.quantity > 0);
+      const updatedItems = state.items
+        .map(item => (item.id === action.productId ? { ...item, quantity: Math.max(0, action.quantity) } : item))
+        .filter(item => item.quantity > 0);
       return {
         ...state,
         items: updatedItems,
@@ -118,41 +81,32 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   }
 }
 
-const CartContext = createContext<{
-  state: CartState;
-  dispatch: React.Dispatch<CartAction>;
-} | null>(null);
+const CartContext = createContext(null);
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user } = useAuth();
 
-  // Storage keys
   const storageKey = user?.email ? `cart_${user.email}` : 'cart_guest';
 
-  // Hydrate from localStorage on mount and when user changes
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
-        const parsed: CartState = JSON.parse(raw);
-        // Recalculate total for safety
+        const parsed = JSON.parse(raw);
         const total = parsed.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
         dispatch({ type: 'HYDRATE', state: { ...parsed, total } });
       } else {
-        // If switching users, clear to avoid leaking guest cart
         dispatch({ type: 'HYDRATE', state: initialState });
       }
     } catch (e) {
       console.error('Failed to hydrate cart from storage', e);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email]);
 
-  // Persist to localStorage when cart changes
   useEffect(() => {
     try {
-      const toStore: CartState = {
+      const toStore = {
         items: state.items,
         wishlist: state.wishlist,
         total: state.total,
@@ -177,3 +131,5 @@ export function useCart() {
   }
   return context;
 }
+
+

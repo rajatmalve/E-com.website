@@ -1,27 +1,22 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Eye } from 'lucide-react';
-import { useCart, Product } from '../contexts/CartContext';
+import { useCart } from '../contexts/CartContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
-interface ProductCardProps {
-  product: Product;
-  index: number;
-}
-
-export default function ProductCard({ product, index }: ProductCardProps) {
+export default function ProductCard({ product, index }) {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
   
   const isInWishlist = state.wishlist.some(item => item.id === product.id);
   const isInCart = state.items.some(item => item.id === product.id);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = (e) => {
     e.stopPropagation();
     dispatch({ type: 'ADD_TO_CART', product });
   };
 
-  const handleToggleWishlist = (e: React.MouseEvent) => {
+  const handleToggleWishlist = (e) => {
     e.stopPropagation();
     if (isInWishlist) {
       dispatch({ type: 'REMOVE_FROM_WISHLIST', productId: product.id });
@@ -47,7 +42,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-44 sm:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <motion.div
@@ -109,7 +104,11 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <span>{isInCart ? 'Added' : 'Add'}</span>
           </motion.button>
         </div>
+        
       </div>
     </motion.div>
   );
 }
+
+
+

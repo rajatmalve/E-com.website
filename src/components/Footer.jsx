@@ -19,9 +19,8 @@ import {
 const Footer = () => {
   const [email, setEmail] = useState('');
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    // Handle newsletter subscription
     console.log('Newsletter subscription:', email);
     setEmail('');
   };
@@ -74,7 +73,7 @@ const Footer = () => {
       {/* Features Section */}
       <div className="border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -98,7 +97,7 @@ const Footer = () => {
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -239,3 +238,5 @@ const Footer = () => {
 };
 
 export default Footer;
+
+
