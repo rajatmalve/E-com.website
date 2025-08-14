@@ -26,7 +26,7 @@ export default function ProductCard({ product, index }) {
   };
 
   const handleProductClick = () => {
-    navigate(`/products/₹{product.id}`);
+    navigate(`/products/${product.id}`);
   };
 
   return (
