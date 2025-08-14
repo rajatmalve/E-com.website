@@ -128,7 +128,7 @@ const Footer = () => {
             className="lg:col-span-1"
           >
             <div className="mb-4">
-             <Link to="/">
+              <Link to="/">
                 <img
                   src="/Pocho Logo.jpg"
                   alt="Pocho"
@@ -155,7 +155,7 @@ const Footer = () => {
                   className="p-3 bg-primary-gradient rounded-full hover:scale-110 transition-all duration-300 shadow-lg"
                   aria-label={social.label}
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-6 h-6" />
                 </motion.a>
               ))}
             </div>
@@ -177,7 +177,7 @@ const Footer = () => {
                       onClick={handleTrackOrderClick}
                       className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group w-full text-left"
                     >
-                      <ArrowRight className="w-3 h-3 mr-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-6 h-6 mr-2 group-hover:translate-x-1 transition-transform" />
                       {link.name}
                     </button>
                   ) : (
@@ -185,7 +185,7 @@ const Footer = () => {
                       to={link.href}
                       className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <ArrowRight className="w-3 h-3 mr-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-6 h-6 mr-2 group-hover:translate-x-1 transition-transform" />
                       {link.name}
                     </Link>
                   )}
@@ -240,23 +240,29 @@ const Footer = () => {
                   type="submit"
                   className="px-4 py-2 bg-primary-gradient rounded-r-lg transition-all duration-300 shadow-lg hover:opacity-90"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-6 h-6" />
                 </button>
               </div>
             </form>
 
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-blue-400" />
-                <span className="text-gray-400 text-sm">support@boltstore.com</span>
+                <Mail className="w-6 h-6 text-blue-400" />
+                <span className="text-gray-400 text-sm">support@letspocho.com</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-blue-400" />
-                <span className="text-gray-400 text-sm">+1 (555) 123-4567</span>
+                <Phone className="w-6 h-6 text-blue-400" />
+                <a
+                  href="tel:+919561222419"
+                  className="text-gray-400 text-sm hover:underline"
+                >
+                  +91 9561222419
+                </a>
               </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-4 h-4 text-blue-400" />
-                <span className="text-gray-400 text-sm">123 dighori, Nagpur, 12345</span>
+
+              <div className="flex space-x-3">
+                <MapPin className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
+                <p className="text-gray-400 text-sm">Milkat No.204, Swami Samartha Warehousing, Beside Laxmi Lawns, Near Kawadipath Toll Naka, Pune Solapur Highway, Phursungi, Pune, Maharastra 412308.</p>
               </div>
             </div>
           </motion.div>
@@ -275,25 +281,25 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="hover:underline text-white"
               >
-               
+
               </a>
             </div>
 
             <div className="flex items-center space-x-4">
               <span className="text-gray-400">
-               <div className="flex items-center space-x-2 text-sm text-gray-400">
-              
-              <span>Design and Developed by</span>
-              <span>© {new Date().getFullYear()}</span>
-              <a
-                href="https://rsinfotechsys.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline text-white"
-              >
-                RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
-              </a>
-            </div>
+                <div className="flex items-center space-x-2 text-sm text-gray-400">
+
+                  <span>Design and Developed by</span>
+                  <span>© {new Date().getFullYear()}</span>
+                  <a
+                    href="https://rsinfotechsys.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline text-white"
+                  >
+                    RIGHT SERVE INFOTECH SYSTEM PVT. LTD.
+                  </a>
+                </div>
               </span>
             </div>
           </div>
